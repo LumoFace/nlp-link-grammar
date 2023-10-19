@@ -80,4 +80,38 @@ def add_to_epsilon_closure(state_set, state):
     state_set[state] = 1
     state_set_2 = state.transitions.get_epsilon()
     if state_set_2:
-      for s
+      for state2 in state_set_2.keys():
+        add_to_epsilon_closure(state_set, state2)
+
+class StateMap:
+  """
+  Helper class used by nfa_to_dfa() to map back and forth between
+  sets of states from the old machine and states of the new machine.
+  """
+  new_machine     = None # Machine
+  old_to_new_dict = None # {(old_state,...) : new_state}
+  new_to_old_dict = None # {id(new_state) : old_state_set}
+
+  def __init__(self, new_machine):
+    self.new_machine = new_machine
+    self.old_to_new_dict = {}
+    self.new_to_old_dict= {}
+
+  def old_to_new(self, old_state_set):
+    """
+    Return the state of the new machine corresponding to the
+    set of old machine states represented by |state_set|. A new
+    state will be created if necessary. If any of the old states
+    are accepting states, the new state will be an accepting state
+    with the highest priority action from the old states.
+    """
+    key = self.make_key(old_state_set)
+    new_state = self.old_to_new_dict.get(key, None)
+    if not new_state:
+      action = self.highest_priority_action(old_state_set)
+      new_state = self.new_machine.new_state(action)
+      self.old_to_new_dict[key] = new_state
+      self.new_to_old_dict[id(new_state)] = old_state_set
+      #for old_state in old_state_set.keys():
+        #new_state.merge_actions(old_state)
+    return new_s
