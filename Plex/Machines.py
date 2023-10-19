@@ -89,4 +89,51 @@ class Node:
 
   def set_action(self, action, priority):
     """Make this an accepting state with the given action. If 
-    there is already an action
+    there is already an action, choose the action with highest
+    priority."""
+    if priority > self.action_priority:
+      self.action = action
+      self.action_priority = priority
+
+  def get_action(self):
+    return self.action
+
+  def get_action_priority(self):
+    return self.action_priority
+
+#	def merge_actions(self, other_state):
+#		"""Merge actions of other state into this state according
+#    to their priorities."""
+#		action = other_state.get_action()
+#		priority = other_state.get_action_priority()
+#		self.set_action(action, priority)
+
+  def is_accepting(self):
+    return self.action is not None
+
+  def __str__(self):
+    return "State %d" % self.number
+
+  def dump(self, file):
+    import string
+    # Header
+    file.write("   State %d:\n" % self.number)
+    # Transitions
+#		self.dump_transitions(file)
+    self.transitions.dump(file)
+    # Action
+    action = self.action
+    priority = self.action_priority
+    if action is not None:
+      file.write("      %s [priority %d]\n" % (action, priority))
+  
+
+class FastMachine:
+  """
+  FastMachine is a deterministic machine represented in a way that
+  allows fast scanning.
+  """
+  initial_states = None # {state_name:state}
+  states = None         # [state]
+                        # where state = {event:state, 'else':state, 'action':Action}
+  next_number = 1       # for 
