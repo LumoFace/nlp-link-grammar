@@ -114,4 +114,43 @@ class StateMap:
       self.new_to_old_dict[id(new_state)] = old_state_set
       #for old_state in old_state_set.keys():
         #new_state.merge_actions(old_state)
-    return new_s
+    return new_state
+  
+  def highest_priority_action(self, state_set):
+    best_action = None
+    best_priority = LOWEST_PRIORITY
+    for state in state_set.keys():
+      priority = state.action_priority
+      if priority > best_priority:
+        best_action = state.action
+        best_priority = priority
+    return best_action
+  
+#	def old_to_new_set(self, old_state_set):
+#		"""
+#		Return the new state corresponding to a set of old states as
+#		a singleton set.
+#		"""
+#		return {self.old_to_new(old_state_set):1}
+
+  def new_to_old(self, new_state):
+    """Given a new state, return a set of corresponding old states."""
+    return self.new_to_old_dict[id(new_state)]
+
+  def make_key(self, state_set):
+    """
+    Convert a set of states into a uniquified
+    sorted tuple suitable for use as a dictionary key.
+    """
+    lst = state_set.keys()
+    lst.sort()
+    return tuple(lst)
+
+  def dump(self, file):
+    from Transitions import state_set_str
+    for new_state in self.new_machine.states:
+      old_state_set = self.new_to_old_dict[id(new_state)]
+      file.write("   State %s <-- %s\n" % (
+        new_state['number'], state_set_str(old_state_set)))
+    
+
