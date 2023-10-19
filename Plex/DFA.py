@@ -37,4 +37,47 @@ def nfa_to_dfa(old_machine, debug = None):
   for new_state in new_machine.states:
     transitions = TransitionMap()
     for old_state in state_map.new_to_old(new_state).keys():
-      f
+      for event, old_target_states in old_state.transitions.items():
+        if event and old_target_states:
+          transitions.add_set(event, set_epsilon_closure(old_target_states))
+    for event, old_states in transitions.items():
+      new_machine.add_transitions(new_state, event, state_map.old_to_new(old_states))
+  if debug:
+    debug.write("\n===== State Mapping =====\n")
+    state_map.dump(debug)
+  return new_machine
+
+def set_epsilon_closure(state_set):
+  """
+  Given a set of states, return the union of the epsilon
+  closures of its member states.
+  """
+  result = {}
+  for state1 in state_set.keys():
+    for state2 in epsilon_closure(state1).keys():
+      result[state2] = 1
+  return result
+
+def epsilon_closure(state):
+  """
+  Return the set of states reachable from the given state
+  by epsilon moves.
+  """
+  # Cache the result
+  result = state.epsilon_closure
+  if result is None:
+    result = {}
+    state.epsilon_closure = result
+    add_to_epsilon_closure(result, state)
+  return result
+
+def add_to_epsilon_closure(state_set, state):
+  """
+  Recursively add to |state_set| states reachable from the given state
+  by epsilon moves.
+  """
+  if not state_set.get(state, 0):
+    state_set[state] = 1
+    state_set_2 = state.transitions.get_epsilon()
+    if state_set_2:
+      for s
