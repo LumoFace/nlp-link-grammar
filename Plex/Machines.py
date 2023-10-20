@@ -262,4 +262,42 @@ class FastMachine:
     if c1 == c2:
       return repr(c1)
     else:
-      return "%
+      return "%s..%s" % (repr(c1), repr(c2))
+##
+## (Superseded by Machines.FastMachine)
+##
+## class StateTableMachine:
+##   """
+##   StateTableMachine is an alternative representation of a Machine
+##   that can be run more efficiently.
+##   """
+##   initial_states = None # {state_name:state_index}
+##   states = None # [([state] indexed by char code, Action)] 
+  
+##   special_map = {'bol':256, 'eol':257, 'eof':258}
+  
+##   def __init__(self, m):
+##     """
+##     Initialise StateTableMachine from Machine |m|.
+##     """
+##     initial_states = self.initial_states = {}
+##     states = self.states = [None]
+##     old_to_new = {}
+##     i = 1
+##     for old_state in m.states:
+##       new_state = ([0] * 259, old_state.get_action())
+##       states.append(new_state)
+##       old_to_new[old_state] = i # new_state
+##       i = i + 1
+##     for name, old_state in m.initial_states.items():
+##       initial_states[name] = old_to_new[old_state]
+##     for old_state in m.states:
+##       new_state_index = old_to_new[old_state]
+##       new_table = states[new_state_index][0]
+##       transitions = old_state.transitions
+##       for c, old_targets in transitions.items():
+##         if old_targets:
+##           old_target = old_targets[0]
+##           new_target_index = old_to_new[old_target]
+##           if len(c) == 1:
+##
