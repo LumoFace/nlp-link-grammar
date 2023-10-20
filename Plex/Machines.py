@@ -300,4 +300,27 @@ class FastMachine:
 ##           old_target = old_targets[0]
 ##           new_target_index = old_to_new[old_target]
 ##           if len(c) == 1:
-##
+##             a = ord(c)
+##           else:
+##             a = self.special_map[c]
+##           new_table[a] = states[new_target_index]
+
+##   def dump(self, f):
+##     f.write("Plex.StateTableMachine:\n")
+##     f.write("    Initial states:\n")
+##     for name, index in self.initial_states.items():
+##       f.write("        %s: State %d\n" % (
+##         repr(name), id(self.states[index])))
+##     for i in xrange(1, len(self.states)):
+##       table, action = self.states[i]
+##       f.write("    State %d:" % i)
+##       if action:
+##         f.write("%s" % action)
+##       f.write("\n")
+##       f.write("        %s\n" % map(id,table))
+      
+      
+      
+      
+
+
