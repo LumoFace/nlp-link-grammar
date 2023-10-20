@@ -177,4 +177,49 @@ class FastMachine:
   def make_initial_state(self, name, state):
     self.initial_states[name] = state
   
+  def add_transitions(self, state, event, new_state):
+    if type(event) == TupleType:
+      code0, code1 = event
+      if code0 == -maxint:
+        state['else'] = new_state
+      elif code1 <> maxint:
+        while code0 < code1:
+          state[chr(code0)] = new_state
+          code0 = code0 + 1
+    else:
+      state[event] = new_state
+  
+  def get_initial_state(self, name):
+    return self.initial_states[name]
+  
+  def dump(self, file):
+    file.write("Plex.FastMachine:\n")
+    file.write("   Initial states:\n")
+    for name, state in self.initial_states.items():
+      file.write("      %s: %s\n" % (repr(name), state['number']))
+    for state in self.states:
+      self.dump_state(state, file)
+
+  def dump_state(self, state, file):
+    import string
+    # Header
+    file.write("   State %d:\n" % state['number'])
+    # Transitions
+    self.dump_transitions(state, file)
+    # Action
+    action = state['action']
+    if action is not None:
+      file.write("      %s\n" % action)
+  
+  def dump_transitions(self, state, file):
+    chars_leading_to_state = {}
+    special_to_state = {}
+    for (c, s) in state.items():
+      if len(c) == 1:
+        chars = chars_leading_to_state.get(id(s), None)
+        if chars is None:
+          chars = []
+          chars_leading_to_state[id(s)] = chars
+        chars.append(c)
+      elif len(c) <= 4:
  
