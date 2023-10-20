@@ -222,4 +222,44 @@ class FastMachine:
           chars_leading_to_state[id(s)] = chars
         chars.append(c)
       elif len(c) <= 4:
- 
+        special_to_state[c] = s
+    ranges_to_state = {}
+    for state in self.states:
+      char_list = chars_leading_to_state.get(id(state), None)
+      if char_list:
+        ranges = self.chars_to_ranges(char_list)
+        ranges_to_state[ranges] = state
+    ranges_list = ranges_to_state.keys()
+    ranges_list.sort()
+    for ranges in ranges_list:
+      key = self.ranges_to_string(ranges)
+      state = ranges_to_state[ranges]
+      file.write("      %s --> State %d\n" % (key, state['number']))
+    for key in ('bol', 'eol', 'eof', 'else'):
+      state = special_to_state.get(key, None)
+      if state:
+        file.write("      %s --> State %d\n" % (key, state['number']))
+
+  def chars_to_ranges(self, char_list):
+    char_list.sort()
+    i = 0
+    n = len(char_list)
+    result = []
+    while i < n:
+      c1 = ord(char_list[i])
+      c2 = c1
+      i = i + 1
+      while i < n and ord(char_list[i]) == c2 + 1:
+        i = i + 1
+        c2 = c2 + 1
+      result.append((chr(c1), chr(c2)))
+    return tuple(result)
+  
+  def ranges_to_string(self, range_list):
+    return string.join(map(self.range_to_string, range_list), ",")
+  
+  def range_to_string(self, (c1, c2)):
+    if c1 == c2:
+      return repr(c1)
+    else:
+      return "%
