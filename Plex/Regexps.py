@@ -270,4 +270,54 @@ RawNewline = _RawNewline()
 
 class SpecialSymbol(RE):
 	"""
-	SpecialSymbol(s
+	SpecialSymbol(sym) is an RE which matches the special input
+	symbol |sym|, which is one of BOL, EOL or EOF.
+	"""
+	nullable = 0
+	match_nl = 0
+	sym = None
+
+	def __init__(self, sym):
+		self.sym = sym
+
+	def build_machine(self, m, initial_state, final_state, match_bol, nocase):
+		# Sequences 'bol bol' and 'bol eof' are impossible, so only need
+		# to allow for bol if sym is eol
+		if match_bol and self.sym == EOL:
+			initial_state = self.build_opt(m, initial_state, BOL)
+		initial_state.add_transition(self.sym, final_state)
+
+
+class Seq(RE):
+	"""Seq(re1, re2, re3...) is an RE which matches |re1| followed by
+	|re2| followed by |re3|..."""
+
+	def __init__(self, *re_list):
+		nullable = 1
+		for i in xrange(len(re_list)):
+			re = re_list[i]
+			self.check_re(i, re)
+			nullable = nullable and re.nullable
+		self.re_list = re_list
+		self.nullable = nullable
+		i = len(re_list)
+		match_nl = 0
+		while i:
+			i = i - 1
+			re = re_list[i]
+			if re.match_nl:
+				match_nl = 1
+				break
+			if not re.nullable:
+				break
+		self.match_nl = match_nl
+		
+	def build_machine(self, m, initial_state, final_state, match_bol, nocase):
+		re_list = self.re_list
+		if len(re_list) == 0:
+			initial_state.link_to(final_state)
+		else:
+			s1 = initial_state
+			n = len(re_list)
+			for i in xrange(n):
+			
