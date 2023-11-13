@@ -370,3 +370,61 @@ class Alt(RE):
 
 	def calc_str(self):
 		return "Alt(%s)" % string.join(map(str, self.re_list), ",")
+
+
+class Rep1(RE):
+	"""Rep1(re) is an RE which matches one or more repetitions of |re|."""
+
+	def __init__(self, re):
+		self.check_re(1, re)
+		self.re = re
+		self.nullable = re.nullable
+		self.match_nl = re.match_nl
+
+	def build_machine(self, m, initial_state, final_state, match_bol, nocase):
+		s1 = m.new_state()
+		s2 = m.new_state()
+		initial_state.link_to(s1)
+		self.re.build_machine(m, s1, s2, match_bol or self.re.match_nl, nocase)
+		s2.link_to(s1)
+		s2.link_to(final_state)
+
+	def calc_str(self):
+		return "Rep1(%s)" % self.re
+
+
+class SwitchCase(RE):
+	"""
+	SwitchCase(re, nocase) is an RE which matches the same strings as RE, 
+	but treating upper and lower case letters according to |nocase|. If
+	|nocase| is true, case is ignored, otherwise it is not.
+	"""
+	re = None
+	nocase = None
+
+	def __init__(self, re, nocase):
+		self.re = re
+		self.nocase = nocase
+		self.nullable = re.nullable
+		self.match_nl = re.match_nl
+
+	def build_machine(self, m, initial_state, final_state, match_bol, nocase):
+		self.re.build_machine(m, initial_state, final_state, match_bol, 
+													self.nocase)
+
+	def calc_str(self):
+		if self.nocase:
+			name = "NoCase"
+		else:
+			name = "Case"
+		return "%s(%s)" % (name, self.re)
+
+#
+#	 Composite RE constructors
+#	 -------------------------
+#
+#	 These REs are defined in terms of the primitive REs.
+#
+
+Empty = Seq()
+Empty.__doc__
