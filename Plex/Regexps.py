@@ -537,4 +537,21 @@ def Case(re):
 Bol = Char(BOL)
 Bol.__doc__ = \
 	"""
-	Bol
+	Bol is an RE which matches the beginning of a line.
+	"""
+Bol.str = "Bol"
+
+Eol = Char(EOL)
+Eol.__doc__ = \
+	"""
+	Eol is an RE which matches the end of a line.
+	"""
+Eol.str = "Eol"
+
+Eof = Char(EOF)
+Eof.__doc__ = \
+	"""
+	Eof is an RE which matches the end of the file.
+	"""
+Eof.str = "Eof"
+
