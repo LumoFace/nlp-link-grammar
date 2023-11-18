@@ -59,4 +59,15 @@ def graphDebugTimes():
     totalCalls   = []
     totalDelta   = []
     for x in DEBUG_CALL_LIST[1:]:
-        currentDelta = x['time'] - DEBUG_CALL_LIST[callIterator]['t
+        currentDelta = x['time'] - DEBUG_CALL_LIST[callIterator]['time']
+        if currentDelta >= 0.2:
+            totalDelta.append(currentDelta)
+            totalCalls.append(callIterator)
+            callIterator += 1
+
+    pylab.title('Calls vs. Delta time')
+    pylab.xlabel('calls over 0.2s')
+    pylab.ylabel('delta time (s)')
+
+    pylab.plot(totalCalls, totalDelta)
+    pylab.savefig('debug-time-callgraph')
