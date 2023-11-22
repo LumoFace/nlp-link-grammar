@@ -55,3 +55,13 @@ def memoize(function, limit=None):
             dict[key] = function(*args, **kwargs)
             list.append(key)
             if limit is not None and len(list) > limit:
+                del dict[list.pop(0)]
+
+        return dict[key]
+
+    memoize_wrapper._memoize_dict = dict
+    memoize_wrapper._memoize_list = list
+    memoize_wrapper._memoize_limit = limit
+    memoize_wrapper._memoize_origfunc = function
+    memoize_wrapper.func_name = function.func_name
+    return memoize_wrapper
