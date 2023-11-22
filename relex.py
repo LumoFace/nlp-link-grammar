@@ -32,4 +32,12 @@ class relex:
     def process(self, sentence):
         output = []
         command = 'java %s %s relex.RelationExtractor -n 4 -l -t -f -a -s "%s"' % (RELEX_VM_OPTS, RELEX_CLASSPATH, sentence)
-        p = Popen(command, stdou
+        p = Popen(command, stdout=PIPE, stderr=open('/dev/null', 'w'), shell=True)
+        while True:
+            o = p.stdout.readline()
+            output.append(o)
+            if o == '' and p.poll() != None: break
+        
+        return output
+
+    
