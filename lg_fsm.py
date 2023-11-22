@@ -10,4 +10,14 @@ def Period(fsm):
     return ['period', fsm.counter]
 
 def Root(fsm):
-    fsm.counter = fsm.counte
+    fsm.counter = fsm.counter - 1
+    
+def Declarative(fsm):
+    return ['declarative', fsm.counter, fsm.counter+1]
+
+def Subject(fsm):
+    return ['subject', fsm.counter, fsm.counter+1]
+
+def Object(fsm):
+    return ['object', fsm.counter, fsm.counter+1]
+
