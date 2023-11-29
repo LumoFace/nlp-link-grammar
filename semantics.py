@@ -68,4 +68,18 @@ while 1:
       after_equal = False
       last_title.append(token[1][:-1])
       if not output.has_key(token[1][:-1]):
-          output[token[1][:-1]
+          output[token[1][:-1]] = {'regex':[],'set':[], 'after_eq':[]}
+          
+  elif token[0] == 'regex':
+      output[last_title[-1]]['regex'].append(token[1][6:-1])
+  elif token[0] == 'set':
+      if not after_equal:
+          output[last_title[-1]]['set'].append(token[1][:-1])
+      else:
+          output[last_title[-1]]['after_eq'].append(token[1][:-1])
+  elif token[0] == 'equal':
+      after_equal = True
+  if token[0] is None:
+    break
+
+pprint.pprint(output)
