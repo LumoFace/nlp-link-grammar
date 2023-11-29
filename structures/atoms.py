@@ -45,3 +45,47 @@ class Stack:
     def pop(self):
         item=self.s[0]
         self.s=self.s[1:]
+        return item
+
+
+class GraphException(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class Atoms:
+    ## Atoms are a basic hypergraph
+    def __init__(self):
+        self.next_edge_id = 0
+        self.nodes = {}
+        self.edges = {}
+        self.hidden_edges = {}
+        self.hidden_nodes = {}
+
+
+    #--Performs a copy of the graph, G, into self.
+    #--hidden edges and hidden nodes are not copied.
+    #--node_id's remain consistent across self and G, 
+    #--however edge_id's do not remain consistent.
+    #--Need to implement copy operator on node_data
+    #--and edge data.
+    def copy(self, G):
+        #--Blank self.
+        self.nodes = {}
+        self.edges = {}
+        self.hidden_edges = {}
+        self.hidden_nodes = {}
+        self.next_edge_id = 0
+        #--Copy nodes.
+        G_node_list = G.node_list()
+        for G_node in G_node_list:
+            self.add_node(G_node,G.node_data(G_node))
+        #--Copy edges.
+        for G_node in G_node_list:
+            out_edges = G.out_arcs(G_node)
+            for edge in out_edges:
+                tail_id=G.tail(edge)
+                self.add_edge(G_node, tail_id, G.edge_data(edge))
+
+    #--Creates a new node with id node_id.  Arbitrary data can be attached
