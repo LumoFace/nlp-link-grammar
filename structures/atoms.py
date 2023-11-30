@@ -122,4 +122,35 @@ class Atoms:
 
     #--Adds an edge (head_id, tail_id).
     #--Arbitrary data can be attached to the edge via edge_data
-    def add_edge(se
+    def add_edge(self, head_id, tail_id, edge_data=None):
+        edge_id = self.next_edge_id
+        self.next_edge_id = self.next_edge_id + 1
+        self.edges[edge_id] = (head_id, tail_id, edge_data)
+        try:
+            mapped_head_data = map(None, self.nodes[head_id])
+            mapped_head_data[1].append(edge_id)
+            mapped_tail_data = map(None, self.nodes[tail_id])
+            mapped_tail_data[0].append(edge_id)
+        except Exception, E:
+            raise GraphException('Exception %s nodes: %s' % (E, self.nodes))
+        
+        return edge_id
+
+    #--Removes the edge from the normal graph, but does not delete
+    #--its information.  The edge is held in a separate structure
+    #--and can be unhidden at some later time.
+    def hide_edge(self, edge_id):
+        self.hidden_edges[edge_id]=self.edges[edge_id]
+        ed=map(None, self.edges[edge_id])
+        head_id=ed[0]
+        tail_id=ed[1]
+        hd=map(None, self.nodes[head_id])
+        td=map(None, self.nodes[tail_id])
+        hd[1].remove(edge_id)
+        td[0].remove(edge_id)
+        del self.edges[edge_id]
+
+    #--Similar to above.
+    #--Stores a tuple of the node data, and the edges that are incident to and from
+    #--the node.  It also hides the incident edges.
+    def hide_node(self, node_id):	  
