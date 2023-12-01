@@ -349,4 +349,38 @@ class Atoms:
             if outdeg == 0:
                 topological_queue.add(node)
             else:
-    
+                outdeg_nodes[node] = outdeg
+        while not topological_queue.empty():
+            current_node = topological_queue.remove()
+            topological_list.append(current_node)			
+            in_edges = self.in_arcs(current_node)
+            for edge in in_edges:
+                head_id = self.head(edge)
+                outdeg_nodes[head_id] = outdeg_nodes[head_id]-1
+                if outdeg_nodes[head_id] == 0:
+                    topological_queue.add(head_id)
+        #--Sanity check.
+        if len(topological_list) != len(node_list):
+            raise Graph_topological_error, topological_list
+        return topological_list
+
+    #--Returns a list of nodes in some DFS order.
+    def dfs(self, source_id):
+        nodes_already_stacked = {source_id:0}
+        dfs_list  = []		
+        dfs_stack = Stack()
+
+        dfs_stack.push(source_id)
+
+        while not dfs_stack.empty():
+            current_node = dfs_stack.pop()
+            dfs_list.append(current_node)
+            out_edges = self.out_arcs(current_node)
+            for edge in out_edges:
+                if not nodes_already_stacked.has_key(self.tail(edge)):
+                    nodes_already_stacked[self.tail(edge)] = 0
+                    dfs_stack.push(self.tail(edge))
+                    
+        return dfs_list
+
+    #--Returns a list of nodes in some 
