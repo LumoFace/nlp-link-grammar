@@ -275,4 +275,45 @@ class Atoms:
         return mapped_data[0][:]
 
     def arc_pairs(self, node_id):
-        for
+        for x in self.in_arcs(node_id):
+            for y in self.out_arcs(node_id):
+                yield (x,y)
+        
+    #--Returns a list of in and out arcs.
+    def arc_list(self, node_id):
+        in_list  = self.in_arcs(node_id)
+        out_list = self.out_arcs(node_id)
+        deg_list = []
+        for arc in in_list:
+            deg_list.append(arc)
+        for arc in out_list:
+            deg_list.append(arc)
+        return deg_list
+
+
+    def out_degree(self, node_id):
+        mapped_data = map(None, self.nodes[node_id])
+        return len(mapped_data[1])
+
+    def in_degree(self, node_id):
+        mapped_data = map(None, self.nodes[node_id])
+        return len(mapped_data[0])
+
+    def degree(self, node_id):
+        mapped_data=map(None, self.nodes[node_id])
+        return len(mapped_data[0])+len(mapped_data[1])	
+
+    def is_cyclic(self):
+        pass
+    
+    # --- Traversals ---
+
+    #--Performs a topological sort of the nodes by "removing" nodes with indegree 0.
+    #--If the graph has a cycle, the Graph_topological_error is thrown with the
+    #--list of successfully ordered nodes.
+    def topological_sort(self):
+        topological_list  = []
+        topological_queue = Queue()
+        indeg_nodes = {}
+        node_list=self.nodes.keys()
+        f
