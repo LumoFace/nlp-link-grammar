@@ -419,4 +419,4 @@ class Atoms:
                     nodes_already_queued[self.head(edge)]=0
                     bfs_queue.add(self.head(edge))
 
-        ret
+        return bfs_list
