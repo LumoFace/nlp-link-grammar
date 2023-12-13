@@ -19,4 +19,52 @@ DISCLAIMED. IN NO EVENT SHALL <copyright holder> BE LIABLE FOR ANY
 DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY TH
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+
+import BitVector
+import math
+import random
+from mm_hash import murmurHash
+
+def hashpjw(s):
+  Mhash = murmurHash(s, 64, 3141)
+  #print Mhash
+  return Mhash
+
+class BloomFilter:
+  def __init__(self, m, k):
+    """Instantiate an m-bit Bloom filter using k hash indices per value."""
+    self.n = 0
+    self.m = m
+    self.k = k
+    self.bv = BitVector.BitVector(size = self.m)
+    self.bits_in_inserted_values = 0
+
+  def _HashIndices(self, s):
+    """Hash s into k bit-vector indices for an m-bit Bloom filter."""
+    indices = []
+    for i in xrange(1, self.k + 1):
+      indices.append((hash(s) + i * hashpjw(s)) % self.m)
+    return indices
+
+  def Insert(self, s):
+    """Insert s into the Bloom filter."""
+    for i in self._HashIndices(s): 
+      self.bv[i] = 1
+    self.n += 1
+    self.bits_in_inserted_values += 8 * len(s)
+
+  def InFilter(self, s):
+    """Return True if s is in the Bloom filter."""
+    for i in self._HashIndices(s):
+      if self.bv[i] != 1:
+        return False
+    return True
+
+  def PrintStats(self):
+    k = float(self.k)
+    m = float(self.m)
+    n = float(self.n)
+    p_fp = math.pow(1.0 - math.ex
