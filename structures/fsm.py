@@ -100,4 +100,40 @@ class FSM:
         self.current_state = self.initial_state
         self.next_state = None
         self.action = None
-        
+        self.memory = memory
+        self.counter = 0
+
+    def reset (self):
+
+        """This sets the current_state to the initial_state and sets
+        input_symbol to None. The initial state was set by the constructor
+        __init__(). """
+
+        self.current_state = self.initial_state
+        self.input_symbol = None
+        self.counter = 0
+
+
+    def add_transition (self, input_symbol, state, action=None, next_state=None):
+
+        """This adds a transition that associates:
+
+                (input_symbol, current_state) --> (action, next_state)
+
+        The action may be set to None in which case the process() method will
+        ignore the action and only set the next_state. The next_state may be
+        set to None in which case the current state will be unchanged.
+
+        You can also set transitions for a list of symbols by using
+        add_transition_list(). """
+
+        if next_state is None:
+            next_state = state
+        self.state_transitions[(input_symbol, state)] = (action, next_state)
+
+    def add_transition_list(self, list_input_symbols, state, action=None, next_state=None):
+
+        """This adds the same transition for a list of input symbols.
+        You can pass a list or a string. Note that it is handy to use
+        string.digits, string.whitespace, string.letters, etc. to add
+        tra
