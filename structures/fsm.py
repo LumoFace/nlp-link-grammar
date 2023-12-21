@@ -196,4 +196,33 @@ class FSM:
 
         3. Check if the default_transition is defined.
             This catches any input_symbol and any state.
-            This is a handler for errors, unde
+            This is a handler for errors, undefined states, or defaults.
+
+        4. No transition was defined. If we get here then raise an exception.
+        """
+
+        if self.state_transitions.has_key((input_symbol, state)):
+            return self.state_transitions[(input_symbol, state)]
+        elif self.state_transitions_any.has_key (state):
+            return self.state_transitions_any[state]
+        elif self.default_transition is not None:
+            return self.default_transition
+        else:
+            raise ExceptionFSM ('Transition is undefined: (%s, %s).' %
+                (str(input_symbol), str(state)) )
+
+    def process (self, input_symbol):
+
+        """This is the main method that you call to process input. This may
+        cause the FSM to change state and call an action. This method calls
+        get_transition() to find the action and next_state associated with the
+        input_symbol and current_state. If the action is None then the action
+        is not called and only the current state is changed. This method
+        processes one complete input symbol. You can process a list of symbols
+        (or a string) by calling process_list(). """
+
+        self.input_symbol = input_symbol
+        (self.action, self.next_state) = self.get_transition (self.input_symbol, self.current_state)
+
+        self.current_state = self.next_state
+        self.st
