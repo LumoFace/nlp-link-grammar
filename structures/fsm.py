@@ -31,4 +31,30 @@ current_state, or "memory". The "memory" attribute can be any object that you
 want to pass along to the action functions. It is not used by the FSM itself.
 For parsing you would typically pass a list to be used as a stack.
 
-The processing sequence is as follows. The proces
+The processing sequence is as follows. The process() method is given an
+input_symbol to process. The FSM will search the table of transitions that
+associate:
+
+        (input_symbol, current_state) --> (action, next_state)
+
+If the pair (input_symbol, current_state) is found then process() will call the
+associated action function and then set the current state to the next_state.
+
+If the FSM cannot find a match for (input_symbol, current_state) it will then
+search the table of transitions that associate:
+
+        (current_state) --> (action, next_state)
+
+If the current_state is found then the process() method will call the
+associated action function and then set the current state to the next_state.
+Notice that this table lacks an input_symbol. It lets you define transitions
+for a current_state and ANY input_symbol. Hence, it is called the "any" table.
+Remember, it is always checked after first searching the table for a specific
+(input_symbol, current_state).
+
+For the case where the FSM did not match either of the previous two cases the
+FSM will try to use the default transition. If the default transition is
+defined then the process() method will call the associated action function and
+then set the current state to the next_state. This lets you define a default
+transition as a catch-all case. You can think of it as an exception handler.
+There can be only on
