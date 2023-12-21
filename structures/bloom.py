@@ -67,4 +67,34 @@ class BloomFilter:
     k = float(self.k)
     m = float(self.m)
     n = float(self.n)
-    p_fp = math.pow(1.0 - math.ex
+    p_fp = math.pow(1.0 - math.exp(-(k * n) / m), k) * 100.0
+    compression_ratio = float(self.bits_in_inserted_values) / m
+    print "Number of filter bits (m) : %d" % self.m
+    print "Number of filter elements (n) : %d" % self.n
+    print "Number of filter hashes (k) : %d" % self.k
+    print "Predicted false positive rate = %.2f" % p_fp
+    print "Compression ratio = %.2f" % compression_ratio
+
+def TestBloomFilter():
+  import random
+  holdback = set()
+  bf = BloomFilter(109017700, 32)
+  #f = open('data/words.dat')
+  #for line in f:
+  #  val = line.rstrip()
+  #  if random.random() <= 0.10:
+  #    holdback.add(val)
+  #  else:
+  #    bf.Insert(val)
+  #f.close()
+  bf.PrintStats()
+  #num_false_positives = 0
+  #for val in holdback:
+  #  if bf.InFilter(val):
+  #    num_false_positives += 1
+  #rate = 100.0 * float(num_false_positives) / float(len(holdback))
+  #print "Actual false positive rate = %.2f%% (%d of %d)" % (rate, 
+  #    num_false_positives, len(holdback))
+
+if __name__ == '__main__':
+  TestBloomFilter()
