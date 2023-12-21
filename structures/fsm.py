@@ -57,4 +57,47 @@ FSM will try to use the default transition. If the default transition is
 defined then the process() method will call the associated action function and
 then set the current state to the next_state. This lets you define a default
 transition as a catch-all case. You can think of it as an exception handler.
-There can be only on
+There can be only one default transition.
+
+Finally, if none of the previous cases are defined for an input_symbol and
+current_state then the FSM will raise an exception. This may be desirable, but
+you can always prevent this just by defining a default transition.
+
+Noah Spurrier 20020822
+"""
+
+class ExceptionFSM(Exception):
+
+    """This is the FSM Exception class."""
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return `self.value`
+
+class FSM:
+
+    """This is a Finite State Machine (FSM).
+    """
+
+    def __init__(self, initial_state, memory=None):
+
+        """This creates the FSM. You set the initial state here. The "memory"
+        attribute is any object that you want to pass along to the action
+        functions. It is not used by the FSM. For parsing you would typically
+        pass a list to be used as a stack. """
+
+        # Map (input_symbol, current_state) --> (action, next_state).
+        self.state_transitions = {}
+        # Map (current_state) --> (action, next_state).
+        self.state_transitions_any = {}
+        self.state_changes = []
+        self.default_transition = None
+
+        self.input_symbol = None
+        self.initial_state = initial_state
+        self.current_state = self.initial_state
+        self.next_state = None
+        self.action = None
+        
