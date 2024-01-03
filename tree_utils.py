@@ -56,4 +56,47 @@ class Print:
         lengths = self._before_and_after_lengths(before_after)
         left = lengths[0] + self._center_of_word(word)
         left_total = lengths[0] + len(word)
+        
+        if other_word:
+            next_word = self._words_before_and_after(sentence, other_word)
+            next_length = self._before_and_after_lengths(before_after)[0]
+            right = left_total + next_length + self._center_of_word(other_word)
+        else:
+            right = 0
+            
+        return (left, right)
+
+    def _truncate_walls(self, sentence):
+        new_w = []
+
+        left_wall  = self._has('LEFT-WALL',  sentence)
+        right_wall = self._has('RIGHT-WALL', sentence)
+        
+        current = (left_wall[0] != True and 0 or 1)
+        while(current < len(sentence) and current < right_wall[1]):
+            #self._get_tag_placement(words, words[current], right_word)
+            new_w.append(sentence[current])
+            current += 1
+            
+        return new_w
+    
+    def _draw_tag_placement(self, tag_locations, tag):
+        output = []
+        i      = 0
+        
+        if tag == 'RW':
+            return
+
+        left = tag_locations[0]
+        idx = self.centers.index(left)
+        
+        if len(self.rows) >= 1 and len(self.last_length) >= 1:
+            if self.centers[idx]+2 == self.last_length[-1]:
+                add_to_last_row = True
+                i = self.last_length[-1]
+            else:
+                add_to_last_row = False
+        else:
+            add_to_last_row = False
+            
  
