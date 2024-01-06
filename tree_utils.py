@@ -99,4 +99,46 @@ class Print:
         else:
             add_to_last_row = False
             
- 
+        if len(self.centers) <= 1 or len(self.centers) <= (idx+1):
+            while(i < self.centers[idx]):
+                output.append(' ')
+                i += 1
+                
+            output.append('+')
+            output.append(tag)
+            output.append('+')
+            self.rows.append(output)
+            return
+        
+        if not add_to_last_row:
+            if idx == 0:
+                while(i < self.centers[idx]):
+                    output.append(' ')
+                    i += 1
+
+            else:
+                while(i <= self.centers[idx]):
+                    output.append(' ')
+                    i += 1
+
+            i += 1
+            output.append('+')
+
+        tag_len = len(tag)
+        tag_center = self._center_of_word(tag)
+        tag_diff = self.centers[idx+1] - self.centers[idx]
+        tag_draw_center = (tag_diff - tag_len)/2
+        tag_distance = tag_draw_center + i
+
+        while(i >= self.centers[idx] and i < tag_distance):
+            if add_to_last_row:
+                self.rows[-1].append('-')
+            else:
+                output.append('-')
+            i += 1
+
+        i = i + tag_len
+        if add_to_last_row:
+            self.rows[-1].append(tag)
+        else:
+            output.append(tag)
