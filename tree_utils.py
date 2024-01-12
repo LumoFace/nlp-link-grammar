@@ -232,4 +232,31 @@ class Print:
         self.last_length = []
         
         current = (left_wall[0] != True and 0 or 1)
-        while(current < len(words) and current < right_wall
+        while(current < len(words) and current < right_wall[1]):
+            if spans[current] < len(words) - current:
+                right_word = words[spans[current]]
+            else:
+                right_word = None
+                
+            tag_locations = self._get_tag_placement(words, words[current], right_word)
+            self.output = self._draw_tag_placement(tag_locations, tags[current])
+            
+            current += 1
+            
+        self.rows.sort(cmp=self._by_length)
+        for x in self.rows:
+            print ''.join(x)
+            
+        centers = self._draw_center_each_word(words)
+        print ''.join(centers)
+        self.print_sentence(words)
+
+        
+
+        
+        
+            
+       
+
+        
+
