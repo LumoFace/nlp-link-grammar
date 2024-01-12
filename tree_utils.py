@@ -188,4 +188,48 @@ class Print:
             
         return output
     
-    de
+    def _word_centers(self, sentence):
+        i = 0
+        z = 0
+        centers = []
+        
+        wall_less = self._truncate_walls(sentence)
+        for x in wall_less:
+            before_after = self._words_before_and_after(wall_less, x)
+            lengths = self._before_and_after_lengths(before_after)
+            left = lengths[0] + self._center_of_word(x)
+            if z > 0:
+                left = left + 1
+                
+            centers.append(left)
+
+        return centers
+    
+    def _pack_vertically(self, lists):
+        pass
+
+    def _by_length(self, word1, word2):
+        return len(word1) - len(word2)
+    
+    def print_diagram(self, sentence):
+        MAX_HEIGHT = 20
+        MAX_LINE   = 80
+        
+        words = sentence[0]
+        spans = sentence[1]
+        links = sentence[4]
+        tags  = sentence[3]
+        
+        left_wall  = self._has('LEFT-WALL',  words)
+        right_wall = self._has('RIGHT-WALL', words)
+
+        words_to_print = len(words)
+        letters_to_print = len(' '.join(words))
+        
+        self.centers = self._word_centers(words)
+
+        self.rows = []
+        self.last_length = []
+        
+        current = (left_wall[0] != True and 0 or 1)
+        while(current < len(words) and current < right_wall
