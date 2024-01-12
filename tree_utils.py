@@ -142,3 +142,50 @@ class Print:
             self.rows[-1].append(tag)
         else:
             output.append(tag)
+        
+        while(i <= self.centers[idx+1]):
+            if add_to_last_row:
+                self.rows[-1].append('-')
+            else:
+                output.append('-')
+            i += 1
+            
+        if add_to_last_row:
+            self.rows[-1].append('+')
+        else:
+            output.append('+')
+
+        i += 1
+        
+        if not add_to_last_row:
+            self.rows.append(output)
+            
+        self.last_length.append(i)
+        return output
+    
+    def _draw_center_each_word(self, sentence):
+        wall_less = self._truncate_walls(sentence)
+        output = []
+        total = 0
+        z = 0
+        for x in wall_less:
+            before_after = self._words_before_and_after(wall_less, x)
+            lengths = self._before_and_after_lengths(before_after)
+            left = lengths[0] + self._center_of_word(x)
+            if z > 0:
+                left = left + 1
+            
+            add_bar = left - len(output)
+
+            i = 0
+            while(i < add_bar):
+                output.append(' ')
+                i += 1
+            
+            #i += 1
+            output.append('|')
+            z += 1
+            
+        return output
+    
+    de
