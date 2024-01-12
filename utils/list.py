@@ -18,4 +18,33 @@ class list_functions:
     def max_depth(self, List):
         accessorList = self.subtree_indices(List)
         a_list = self.flatten(accessorList)
-     
+        c_max_depth = reduce(lambda x, y: max(x, y), a_list)
+        if c_max_depth:
+            return max(c_max_depth)
+        
+    def subtree_indices(self, tree_rep):
+        tree = [([], tree_rep)]
+        list_of_indexLists = []
+        tree_indices = deque()
+        while tree != []:
+            (indices, sub_tree) = tree.pop(0)
+            #print indices, sub_tree
+            list_of_indexLists.append(indices)
+            for (ordinal, subTree) in enumerate(sub_tree[1:]):
+                debug(ordinal)
+                debug(subTree)
+                if isinstance(subTree, list):
+                    idxs = indices[:]
+
+                    debug(idxs)
+                    debug(ordinal)
+
+                    if len(idxs) == 0:
+                        tree_indices.append([0])
+                    else:
+                        tree_indices.append(idxs)
+
+                    idxs.append(ordinal+1)
+                    tree.append((idxs, subTree))
+
+        return list_of_indexLists
